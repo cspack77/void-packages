@@ -3311,3 +3311,12 @@ libdleyna-renderer-1.0.so.1 dleyna-renderer-0.6.0_1
 libdleyna-server-1.0.so.1 dleyna-server-0.6.0_1
 liburiparser.so.1 uriparser-0.8.6_1
 libcpptest.so.0 cpptest-1.1.2_1
+libcuda.so.1 cuda-9.2.148_1
+libavcodec.so.53 cuda-9.2.148_1
+libavcodec.so.54 cuda-9.2.148_1
+libavformat.so.53 cuda-9.2.148_1
+libavformat.so.54 cuda-9.2.148_1
+libnppig.so.9.2 cuda-9.2.148_1
+libnppicc.so.9.2 cuda-9.2.148_1
+libfstrcmp.so.0 fstrcmp-0.7.D001_1
+liblirc_client.so.0 lirc-0.10.1_1

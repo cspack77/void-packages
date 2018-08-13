@@ -1,0 +1,44 @@
+# Template file for 'cuda'
+pkgname=cuda
+version=9.2.148
+revision=1
+_driverver="396.37"
+create_wrksrc=yes
+only_for_archs="x86_64"
+hostmakedepends="perl"
+makedepends="${hostmakedepends} wget"
+#depends="nvidia-opencl"
+short_desc="Nvidia CUDA Toolkit libraries and includes"
+maintainer="Ted Hill <tedhill7@gmail.com>"
+license="Proprietary NVIDIA license"
+homepage="http://www.nvidia.com"
+repository="nonfree"
+nopie=yes
+_pkg="${pkgname}_${version}_${_driverver}_linux"
+distfiles="https://developer.nvidia.com/compute/cuda/9.2/Prod2/local_installers/${_pkg}"
+checksum=8496c72b16fee61889f9281449b5d633d0b358b46579175c275d85c9205fe953
+
+do_fetch() {
+    mkdir -p ${wrksrc}
+    cd ${wrksrc}
+    wget -c --progress=bar:force $distfiles
+}
+
+do_extract() {
+    echo "pwd=$(pwd)"
+    sh ${wrksrc}/"${_pkg}" --extract=${wrksrc}
+    ./cuda-linux*.run --noexec --keep
+    ./cuda-samples*.run --noexec --keep
+    rm pkg/bin/cuda-gdb
+}
+
+do_install() {
+    cd pkg
+    perl install-linux.pl -prefix="${DESTDIR}/opt/cuda" -noprompt -nosymlink
+    perl install-sdk-linux.pl -cudaprefix="${DESTDIR}/opt/cuda" -prefix="${DESTDIR}/opt/cuda/samples" -noprompt
+
+    vinstall ${FILESDIR}/cuda.sh 644 ${DESTDIR}/etc/profile.d
+    vinstall ${FILESDIR}/cuda.conf 644 ${DESTDIR}/etc/ld.so.conf.d
+    vinstall ${DESTDIR}/opt/cuda/doc/pdf/EULA.pdf 644 \
+        usr/share/licenses/${pkgname} LICENSE.pdf
+}

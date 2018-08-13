@@ -1,0 +1,40 @@
+# Template file for 'ovmf'
+pkgname=ovmf
+version=re5cbb98
+revision=1
+wrksrc="${pkgname}"
+build_style=fetch
+only_for_archs="x86_64"
+hostmakedepends=""
+makedepends="git python acpica-utils nasm subversion perl-LWP libuuid-devel"
+short_desc="Tianocore UEFI firmware for qemu"
+maintainer="Ted Hill <tedhill7@gmail.com>"
+license="custom"
+homepage="http://sourceforge.net/apps/mediawiki/tianocore/index.php?title=EDK"
+_toolchain_opt=GCC5
+
+do_fetch() {
+    git clone "https://github.com/tianocore/edk2.git" ${wrksrc}
+}
+
+pre_build() {
+    cd ${wrksrc}
+    mkdir -p bin
+    ln -sf /usr/bin/python2 bin/python
+}
+
+do_build() {
+    export PATH="${wrksrc}/bin:$PATH"
+    cd ${wrksrc}
+    make -C BaseTools
+    export EDK_TOOLS_PATH=${wrksrc}/BaseTools
+    . edksetup.sh BaseTools
+
+    ./BaseTools/BinWrappers/PosixLike/build -t ${_toolchain_opt} -a X64 -p OvmfPkg/OvmfPkgX64.dsc -n $(nproc) -b RELEASE -D FD_SIZE_2MB
+}
+
+do_install() {
+    vinstall ${wrksrc}/Build/OvmfX64/RELEASE_${_toolchain_opt}/FV/OVMF_CODE.fd 644 usr/share/ovmf/x64
+    vinstall ${wrksrc}/Build/OvmfX64/RELEASE_${_toolchain_opt}/FV/OVMF_VARS.fd 644 usr/share/ovmf/x64
+    vinstall ${wrksrc}/OvmfPkg/License.txt 644 usr/share/licenses/ovmf
+}

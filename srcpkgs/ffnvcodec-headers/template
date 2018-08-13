@@ -1,0 +1,26 @@
+# Template file for 'ffnvcodec-headers'
+pkgname=ffnvcodec-headers
+version=8.1.24.2
+revision=1
+build_style=gnu-makefile
+short_desc="FFmpeg version of headers required to interface with Nvidias codec APIs"
+maintainer="Ted Hill <tedhill7@gmail.com>"
+license="MIT"
+wrksrc="nv-codec-headers-n8.1.24.2"
+homepage="https://git.videolan.org/?p=ffmpeg/nv-codec-headers.git"
+distfiles="https://github.com/FFmpeg/nv-codec-headers/releases/download/n${version}/nv-codec-headers-${version}.tar.gz"
+checksum=2b339b2493f5b63b285dd660be05102af7d4ff2de9fcf3af94e48b5f91a3ca57
+
+do_build() {
+    cd ${wrksrc}
+    make PREFIX='/usr'
+    sed -n '4,25p' include/ffnvcodec/nvEncodeAPI.h > LICENSE # Extract license
+    sed -i '1,22s/^.\{,3\}//' LICENSE # Delete C comments
+}
+
+do_install() {
+    cd ${wrksrc}
+    make PREFIX='/usr' DESTDIR="${DESTDIR}" install
+
+    vinstall ${wrksrc}/LICENSE 644 usr/share/licenses/ffnvcodec-headers
+}

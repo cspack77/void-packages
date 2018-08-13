@@ -1,0 +1,14 @@
+# Template file for 'fstrcmp'
+pkgname=fstrcmp
+version=0.7.D001
+revision=1
+build_style=gnu-configure
+hostmakedepends=""
+makedepends="make gcc ghostscript groff libtool"
+depends="glibc"
+short_desc="A library that is used to make fuzzy comparisons of strings and byte arrays, including multi-byte character strings"
+maintainer="Ted Hill <tedhill7@gmail.com>"
+license="GPL"
+homepage="http://fstrcmp.sourceforge.net"
+distfiles="http://fstrcmp.sourceforge.net/${pkgname}-${version}.tar.gz"
+checksum=e4018e850f80700acee8da296e56e15b1eef711ab15157e542e7d7e1237c3476

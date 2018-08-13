@@ -3,7 +3,7 @@
 _desc="NVIDIA drivers for linux (long-lived series)"
 
 pkgname=nvidia
-version=390.87
+version=396.45
 revision=1
 maintainer="Juan RP <xtraeme@voidlinux.eu>"
 license="Proprietary NVIDIA license"
@@ -23,15 +23,16 @@ build_options_default="glvnd"
 
 if [ "$XBPS_TARGET_MACHINE" = "i686" ]; then
 	_pkg="NVIDIA-Linux-x86-${version}"
-	distfiles="http://uk.download.nvidia.com/XFree86/Linux-x86/${version}/${_pkg}.run"
-	checksum=5c29c5f9d80a07ea71219c6323fe5fc9b7577847b970f23161685d4b890b9966
+	distfiles="http://download.nvidia.com/XFree86/Linux-x86/${version}/${_pkg}.run"
+	checksum=6f4af70ee3d03ed31c497a5d555164c56057b53ecedfc0d2c8de4b0b90728805
 else
-	_pkg="NVIDIA-Linux-x86_64-${version}-no-compat32"
-	distfiles="http://uk.download.nvidia.com/XFree86/Linux-x86_64/${version}/${_pkg}.run"
-	checksum=c7c07151e17f610af11f7870560d96c3a3ee9bb91ba1bb82fcc7b5d473d40b66
+	_pkg="NVIDIA-Linux-x86_64-${version}"
+	#_pkg="NVIDIA-Linux-x86_64-${version}-no-compat32"
+	distfiles="http://download.nvidia.com/XFree86/Linux-x86_64/${version}/${_pkg}.run"
+	checksum=30c2e29a45794227079730eac7c452da5290ea8f336ed2286dafd488e3695f20
 fi
 
-subpackages="nvidia-gtklibs nvidia-dkms nvidia-opencl nvidia-libs"
+subpackages="nvidia-gtklibs nvidia-dkms nvidia-opencl nvidia-libs nvidia-libs-32bit"
 
 do_extract() {
 	install -m755 ${XBPS_SRCDISTDIR}/${pkgname}-${version}/${_pkg}.run ${wrksrc}
@@ -104,8 +105,8 @@ do_install() {
 	ln -sf libGLESv2.so.2.1.0 ${DESTDIR}/usr/lib/libGLESv2.so
 	ln -sf libGLESv2.so.2.1.0 ${DESTDIR}/usr/lib/libGLESv2.so.2
 
-	vinstall libnvidia-egl-wayland.so.1.0.2 755 usr/lib
-	ln -sf libnvidia-egl-wayland.so.1.0.2 ${DESTDIR}/usr/lib/libnvidia-egl-wayland.so.1
+	vinstall libnvidia-egl-wayland.so.1.0.3 755 usr/lib
+	ln -sf libnvidia-egl-wayland.so.1.0.3 ${DESTDIR}/usr/lib/libnvidia-egl-wayland.so.1
 
 	vinstall 10_nvidia.json 755 usr/share/glvnd/egl_vendor.d
 	vinstall 10_nvidia_wayland.json 755 usr/share/egl/egl_external_platform.d
@@ -290,4 +291,121 @@ nvidia-opencl_package() {
 		vmove "usr/lib/libnvidia-opencl*"
 		vmove etc/OpenCL
 	}
+}
+nvidia-libs-32bit_package() {
+	short_desc="${_desc} - common libraries (32-bit)"
+    depends="zlib-32bit libgcc-32bit" 
+	provides="libEGL-32bit-${version}_${revision} libGL-32bit-${version}_${revision} libGLES-32bit-${version}_${revision}"
+	replaces="libEGL-32bit>=0 libGL-32bit>=0 libGLES-32bit>=0"
+    pkg_install() {
+	    cd ${_pkg}/32
+    	# GLX client libs
+    	if [ "${build_option_glvnd}" ]; then
+    		# ----- Also provided by the libglvnd package (todo)
+    		vinstall libGL.so.1.7.0 755 usr/lib32
+    		ln -sf libGL.so.1.7.0 ${PKGDESTDIR}/usr/lib32/libGL.so
+    		ln -sf libGL.so.1.7.0 ${PKGDESTDIR}/usr/lib32/libGL.so.1
+    
+    		vinstall libGLX.so.0 755 usr/lib32
+    		ln -sf libGLX.so.0 ${PKGDESTDIR}/usr/lib32/libGLX.so
+    		# --------------------------------------------------
+    
+    		# Required for GLVND option
+    		vinstall libGLX_nvidia.so.${version} 755 usr/lib32
+    		ln -sf libGLX_nvidia.so.${version} ${PKGDESTDIR}/usr/lib32/libGLX_nvidia.so.0
+    		ln -sf libGLX_nvidia.so.${version} ${PKGDESTDIR}/usr/lib32/libGLX_indirect.so.0
+    	else
+    		vinstall libGL.so.${version} 755 usr/lib32
+    		ln -sf libGL.so.${version} ${PKGDESTDIR}/usr/lib32/libGL.so
+    		ln -sf libGL.so.${version} ${PKGDESTDIR}/usr/lib32/libGL.so.1
+    
+    		# Not required for non-GLVND option but recommended
+    		# more info: https://devtalk.nvidia.com/default/topic/915640/multiple-glx-client-libraries-in-the-nvidia-linux-driver-installer-package/
+    		vinstall libGLX_nvidia.so.${version} 755 usr/lib32
+    		ln -sf libGLX_nvidia.so.${version} ${PKGDESTDIR}/usr/lib32/libGLX_nvidia.so.0
+    		ln -sf libGLX_nvidia.so.${version} ${PKGDESTDIR}/usr/lib32/libGLX_indirect.so.0
+    
+    	fi
+    
+    	# OpenGL core library
+    	vinstall libnvidia-glcore.so.${version} 755 usr/lib32
+    	vinstall libnvidia-eglcore.so.${version} 755 usr/lib32
+    	vinstall libnvidia-glsi.so.${version} 755 usr/lib32
+    
+    	# EGL
+    	# ----- Also provided by the libglvnd package (todo)
+    	vinstall libOpenGL.so.0 755 usr/lib32
+    	ln -sf libOpenGL.so.0 ${PKGDESTDIR}/usr/lib32/libOpenGL.so
+    
+    	vinstall libGLdispatch.so.0 755 usr/lib32
+    
+    	vinstall libGLESv1_CM.so.1.2.0 755 usr/lib32
+    	ln -sf libGLESv1_CM.so.1.2.0 ${PKGDESTDIR}/usr/lib32/libGLESv1_CM.so
+    	ln -sf libGLESv1_CM.so.1.2.0 ${PKGDESTDIR}/usr/lib32/libGLESv1_CM.so.1
+    
+    	vinstall libGLESv2.so.2.1.0 755 usr/lib32
+    	ln -sf libGLESv2.so.2.1.0 ${PKGDESTDIR}/usr/lib32/libGLESv2.so
+    	ln -sf libGLESv2.so.2.1.0 ${PKGDESTDIR}/usr/lib32/libGLESv2.so.2
+    
+    	# --------------------------------------------------
+    
+    	vinstall libEGL.so.1.1.0 755 usr/lib32
+    	ln -sf libEGL.so.1.1.0 ${PKGDESTDIR}/usr/lib32/libEGL.so
+    	ln -sf libEGL.so.1.1.0 ${PKGDESTDIR}/usr/lib32/libEGL.so.1
+    
+    	vinstall libEGL_nvidia.so.${version} 755 usr/lib32
+    	ln -sf libEGL_nvidia.so.${version} ${PKGDESTDIR}/usr/lib32/libEGL_nvidia.so.0
+    
+    	vinstall libGLESv1_CM_nvidia.so.${version} 755 usr/lib32
+    	ln -sf libGLESv1_CM_nvidia.so.${version} ${PKGDESTDIR}/usr/lib32/libGLESv1_CM_nvidia.so.1
+    
+    	vinstall libGLESv2_nvidia.so.${version} 755 usr/lib32
+    	ln -sf libGLESv2_nvidia.so.${version} ${PKGDESTDIR}/usr/lib32/libGLESv2_nvidia.so.2
+    
+    	# Thread Local Storage
+    	vinstall tls/libnvidia-tls.so.${version} 755 usr/lib32
+    
+    	# VDPAU
+    	vinstall libvdpau_nvidia.so.${version} 755 usr/lib32/vdpau
+    	ln -sf libvdpau_nvidia.so.${version} ${PKGDESTDIR}/usr/lib32/vdpau/libvdpau_nvidia.so.1
+    
+    	# misc libraries
+    	#vinstall libnvidia-cfg.so.${version} 755 usr/lib32
+    	#ln -sf libnvidia-cfg.so.${version} ${PKGDESTDIR}/usr/lib32/libnvidia-cfg.so
+    	#ln -sf libnvidia-cfg.so.${version} ${PKGDESTDIR}/usr/lib32/libnvidia-cfg.so.1
+    
+    	vinstall libnvidia-ml.so.${version} 755 usr/lib32
+    	ln -sf libnvidia-ml.so.${version} ${PKGDESTDIR}/usr/lib32/libnvidia-ml.so
+    	ln -sf libnvidia-ml.so.${version} ${PKGDESTDIR}/usr/lib32/libnvidia-ml.so.1
+    
+    	vinstall libnvidia-encode.so.${version} 755 usr/lib32
+    	ln -sf libnvidia-encode.so.${version} ${PKGDESTDIR}/usr/lib32/libnvidia-encode.so
+    	ln -sf libnvidia-encode.so.${version} ${PKGDESTDIR}/usr/lib32/libnvidia-encode.so.1
+    
+    	vinstall libnvidia-ifr.so.${version} 755 usr/lib32
+    	ln -sf libnvidia-ifr.so.${version} ${PKGDESTDIR}/usr/lib32/libnvidia-ifr.so
+    	ln -sf libnvidia-ifr.so.${version} ${PKGDESTDIR}/usr/lib32/libnvidia-ifr.so.1
+    
+    	vinstall libnvidia-fbc.so.${version} 755 usr/lib32
+    	ln -sf libnvidia-fbc.so.${version} ${PKGDESTDIR}/usr/lib32/libnvidia-fbc.so
+    	ln -sf libnvidia-fbc.so.${version} ${PKGDESTDIR}/usr/lib32/libnvidia-fbc.so.1
+    
+    	vinstall libnvidia-fatbinaryloader.so.${version} 755 usr/lib32
+    	ln -sf libnvidia-fatbinaryloader.so.${version} ${PKGDESTDIR}/usr/lib32/libnvidia-fatbinaryloader.so.1
+    	ln -sf libnvidia-fatbinaryloader.so.1 ${PKGDESTDIR}/usr/lib32/libnvidia-fatbinaryloader.so
+
+    	# CUDA
+    	vinstall libcuda.so.${version} 755 usr/lib32
+    	ln -sf libcuda.so.${version} ${PKGDESTDIR}/usr/lib32/libcuda.so
+    	ln -sf libcuda.so.${version} ${PKGDESTDIR}/usr/lib32/libcuda.so.1
+    
+    	vinstall libnvcuvid.so.${version} 755 usr/lib32
+    	ln -sf libnvcuvid.so.${version} ${PKGDESTDIR}/usr/lib32/libnvcuvid.so
+    	ln -sf libnvcuvid.so.${version} ${PKGDESTDIR}/usr/lib32/libnvcuvid.so.1
+    
+    	vinstall libnvidia-ptxjitcompiler.so.${version} 755 usr/lib32
+    	ln -sf libnvidia-ptxjitcompiler.so.${version} ${PKGDESTDIR}/usr/lib32/libnvidia-ptxjitcompiler.so.1
+    	ln -sf libnvidia-ptxjitcompiler.so.1 ${PKGDESTDIR}/usr/lib32/libnvidia-ptxjitcompiler.so
+
+    }
 }

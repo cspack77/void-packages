@@ -1,0 +1,24 @@
+# Template file for 'looking-glass'
+pkgname=looking-glass
+version=a11
+revision=1
+wrksrc="LookingGlass-${version}"
+only_for_archs="x86_64"
+build_style=gnu-makefile
+hostmakedepends=""
+makedepends="git cmake pkg-config SDL2-devel SDL2_ttf-devel glu-devel libressl-devel spice-devel fontconfig-devel libX11-devel freefont-ttf libconfig-devel nettle-devel"
+short_desc="An extremely low latency KVMFR (KVM FrameRelay) implementation for guests with VGA PCI Passthrough"
+maintainer="Ted Hill <tedhill7@gmail.com>"
+license="GPL2"
+homepage="https://looking-glass.hostfission.com"
+distfiles="https://github.com/gnif/LookingGlass/archive/${version}.tar.gz"
+checksum=65f2045b8daeb019a761921fbc2a638a449f06491f28ac27d6c65031c6f51c87
+
+do_build() {
+    cd ${wrksrc}/client
+    make
+}
+
+do_install() {
+    vinstall ${wrksrc}/client/bin/looking-glass-client 755 usr/bin
+}

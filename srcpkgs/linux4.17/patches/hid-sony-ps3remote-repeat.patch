@@ -1,0 +1,40 @@
+--- linux-4.13.11-orig/drivers/hid/hid-sony.c	2017-11-21 18:21:30.627313579 -0500
++++ linux-4.13.11/drivers/hid/hid-sony.c	2017-11-21 18:25:45.007362537 -0500
+@@ -2175,6 +2175,27 @@
+ 
+ #endif
+ 
++static int ps3remote_setup_repeat(struct hid_device *hdev)
++{
++    struct hid_input *hidinput = list_first_entry(&hdev->inputs,
++                         struct hid_input, list);
++    struct input_dev *input = hidinput->input;
++
++    /*   
++     * Set up autorepeat defaults per the remote control subsystem;
++     * this must be done after hid_hw_start(), as having these non-zero
++     * at the time of input_register_device() tells the input system that
++     * the hardware does the autorepeat, and the PS3 remote does not.
++    */
++    set_bit(EV_REP, input->evbit);
++//  hid_info(hdev, "Delay: %d\n", input->rep[REP_DELAY]);
++//  hid_info(hdev, "Period: %d\n", input->rep[REP_PERIOD]);
++    input->rep[REP_DELAY]  = 150; 
++    input->rep[REP_PERIOD] = 50;  
++
++    return 0;
++}
++
+ static int sony_battery_get_property(struct power_supply *psy,
+ 				     enum power_supply_property psp,
+ 				     union power_supply_propval *val)
+@@ -2766,6 +2787,9 @@
+ 		return -ENODEV;
+ 	}
+ 
++    if (sc->quirks & PS3REMOTE)
++        ret = ps3remote_setup_repeat(hdev);
++
+ 	return ret;
+ }
+ 

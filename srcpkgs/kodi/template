@@ -1,19 +1,18 @@
 # Template file for 'kodi'
 pkgname=kodi
-version=17.6
-revision=3
+version=18.0a3
+revision=1
 build_style=cmake
 configure_args="-DENABLE_INTERNAL_CROSSGUID=OFF"
 patch_args="-Np1"
-_codename="Krypton"
+_codename="Leia"
 wrksrc="xbmc-${version}-${_codename}"
 short_desc="A software media player and entertainment hub for digital media"
 maintainer="Juan RP <xtraeme@voidlinux.eu>"
 homepage="http://www.kodi.tv/"
 license="GPL-2"
 distfiles="https://github.com/xbmc/xbmc/archive/${version}-${_codename}.tar.gz"
-checksum=c8312fe92e5bab1cdac1da93d60baed88fa1574146c50c44e3c86d01671c2b1d
-build_wrksrc=project/cmake
+checksum=f452388b8ce34f9f2d3c002f7e5f28a7b3ad69e8d2be9d775b8ef8f89497d211
 
 lib32disabled=yes
 only_for_archs="i686 i686-musl x86_64 x86_64-musl"
@@ -32,7 +31,7 @@ makedepends="
  libbluetooth-devel yajl-devel libplist-devel librtmp-devel tinyxml-devel
  taglib-devel libcap-devel lame-devel libbluray-devel libnfs-devel ffmpeg-devel
  giflib-devel libxslt-devel gnutls-devel libssh-devel libmicrohttpd-devel
- libcec-devel dcadec-devel crossguid"
+ libcec-devel dcadec-devel crossguid lirc fstrcmp rapidjson"
 
 # The following dependencies are dlopen(3)ed.
 depends="libbluray libmad libvorbis libcurl libflac libmodplug libass libmpeg2
@@ -59,10 +58,36 @@ pre_configure() {
 	else
 		. /etc/profile.d/10_openjdk.sh
 	fi
+    
+    [[ -d kodi-build ]] && rm -rf kodi-build
+    mkdir kodi-build
 }
 
-post_install() {
-	# remove unused stuff
-	rm -rf ${DESTDIR}/usr/include
-	find ${DESTDIR}/usr/lib -name "*.cmake" -delete
+do_configure() {
+    make -C tools/depends/target/libfmt PREFIX=/usr/local
+
+    cd ${wrksrc}/kodi-build
+    cmake .. \
+        -DCMAKE_INSTALL_PREFIX=/usr \
+        -DCMAKE_INSTALL_LIBDIR=/usr/lib \
+        -DENABLE_EVENTCLIENTS=ON \
+        -DLIRC_DEVICE=/run/lirc/lircd \
+        -DENABLE_INTERNAL_FFMPEG="no" \
+        -DWITH_FFMPEG="yes"
+}
+
+do_build() {
+    cd ${wrksrc}/kodi-build
+    cmake --build . -- VERBOSE=1 -j$(getconf _NPROCESSORS_ONLN)
+}
+
+do_install() {
+    _components=('kodi' 'kodi-bin')
+
+    cd ${wrksrc}/kodi-build
+    for _cmp in ${_components[@]}; do
+        DESTDIR=${DESTDIR} cmake \
+        -DCMAKE_INSTALL_COMPONENT="$_cmp" \
+        -P cmake_install.cmake
+    done
 }

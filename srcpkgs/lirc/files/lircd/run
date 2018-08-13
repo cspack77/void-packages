@@ -1,0 +1,3 @@
+#!/bin/sh
+mkdir -p /var/run/lirc
+exec /usr/bin/lircd --nodaemon 2>&1

@@ -1,0 +1,15 @@
+# Template file for 'smplayer-skins'
+pkgname=smplayer-skins
+version=15.2.0
+revision=1
+build_style=gnu-makefile
+make_build_args="PREFIX=/usr"
+make_install_args="PREFIX=/usr"
+hostmakedepends="qt5-host-tools"
+depends="smplayer"
+short_desc="Skins for SMPlayer"
+maintainer="Ted Hill <tedhill7@gmail.com>"
+license="GPL-2, LGPL-3 CCPL"
+homepage="https://www.smplayer.info"
+distfiles="https://downloads.sourceforge.net/smplayer/${pkgname}-${version}.tar.bz2"
+checksum=a73fe16f8b8802780bbac4485767f309ea8064a48e98f0b37523dc2fb7245197

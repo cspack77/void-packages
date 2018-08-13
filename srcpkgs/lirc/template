@@ -1,0 +1,28 @@
+# Template file for 'lirc'
+pkgname=lirc
+version=0.10.1
+revision=1
+only_for_archs="i686 x86_64"
+build_style=configure
+hostmakedepends="pkg-config"
+makedepends="help2man alsa-lib-devel libX11-devel libxslt-devel python3-devel python3-setuptools"
+depends="alsa-lib libX11 libftdi1 libusb-compat"
+short_desc="Linux Infrared Remote Control utilities"
+maintainer="Ted Hill <tedhill7@gmail.com>"
+license="GPL"
+homepage="http://www.lirc.org"
+distfiles="http://prdownloads.sourceforge.net/${pkgname}/${pkgname}-${version}.tar.bz2"
+checksum=8b753c60df2a7f5dcda2db72c38e448ca300c3b4f6000c1501fcb0bd5df414f2
+
+do_build() {
+    cd ${wrksrc}
+    HAVE_UINPUT=1 ./configure \
+        --prefix=/usr \
+        --sbindir=/usr/bin \
+        --sysconfdir=/etc \
+        --localstatedir=/var
+}
+
+post_install() {
+    vsv lircd
+}
