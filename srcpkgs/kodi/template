@@ -1,6 +1,6 @@
 # Template file for 'kodi'
 pkgname=kodi
-version=18.0a3
+version=18.0b1
 revision=1
 build_style=cmake
 configure_args="-DENABLE_INTERNAL_CROSSGUID=OFF"
@@ -12,7 +12,7 @@ maintainer="Juan RP <xtraeme@voidlinux.eu>"
 homepage="http://www.kodi.tv/"
 license="GPL-2"
 distfiles="https://github.com/xbmc/xbmc/archive/${version}-${_codename}.tar.gz"
-checksum=f452388b8ce34f9f2d3c002f7e5f28a7b3ad69e8d2be9d775b8ef8f89497d211
+checksum=2619243e5d97981d2ceac487e8ea65d9eca24b1dfe430ef0e2c291a3c9a9a20f
 
 lib32disabled=yes
 only_for_archs="i686 i686-musl x86_64 x86_64-musl"
@@ -31,7 +31,7 @@ makedepends="
  libbluetooth-devel yajl-devel libplist-devel librtmp-devel tinyxml-devel
  taglib-devel libcap-devel lame-devel libbluray-devel libnfs-devel ffmpeg-devel
  giflib-devel libxslt-devel gnutls-devel libssh-devel libmicrohttpd-devel
- libcec-devel dcadec-devel crossguid lirc fstrcmp rapidjson"
+ libcec-devel dcadec-devel crossguid lirc fstrcmp rapidjson flatbuffers"
 
 # The following dependencies are dlopen(3)ed.
 depends="libbluray libmad libvorbis libcurl libflac libmodplug libass libmpeg2

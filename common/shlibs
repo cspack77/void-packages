@@ -3322,3 +3322,4 @@ libnppig.so.9.2 cuda-9.2.148_1
 libnppicc.so.9.2 cuda-9.2.148_1
 libfstrcmp.so.0 fstrcmp-0.7.D001_1
 liblirc_client.so.0 lirc-0.10.1_1
+libflatbuffers.so.1 flatbuffers-1.9.0_1
