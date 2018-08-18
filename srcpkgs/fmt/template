@@ -1,0 +1,37 @@
+# Template file for 'fmt'
+pkgname=fmt
+version=5.1.0
+revision=1
+only_for_archs="i686 x86_64"
+build_style=cmake
+hostmakedepends="cmake"
+short_desc="Open-source formatting library for C++"
+maintainer="Ted Hill <tedhill7@gmail.com>"
+license="BSD"
+homepage="http://fmtlib.net"
+distfiles="https://github.com/fmtlib/fmt/archive/${version}.tar.gz"
+checksum=73d4cab4fa8a3482643d8703de4d9522d7a56981c938eca42d929106ff474b44
+
+do_build() {
+    cd ${wrksrc}
+    mkdir -p build && cd build
+
+    cmake -DCMAKE_BUILD_TYPE=Release \
+          -DCMAKE_INSTALL_PREFIX=/usr \
+          -DCMAKE_INSTALL_LIBDIR=/usr/lib \
+          -DFMT_DOC=OFF \
+          ..
+    make
+}
+
+post_build() {
+    cd ${wrksrc}/build
+    make test
+}
+
+do_install() {
+    cd ${wrksrc}/build
+    make DESTDIR=${DESTDIR} install
+    vinstall ${wrksrc}/LICENSE.rst 644 usr/share/licenses/${pkgname}
+    vinstall ${wrksrc}/ChangeLog.rst 644 usr/share/doc/${pkgname}
+}
