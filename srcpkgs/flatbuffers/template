@@ -1,0 +1,37 @@
+# Template file for 'flatbuffers'
+pkgname=flatbuffers
+version=1.9.0
+revision=1
+only_for_archs="x86_64"
+build_style=cmake
+makedepends="cmake"
+depends="libgcc"
+short_desc="An efficient cross platform serialization library for C++, with support for Java, C# and Go"
+maintainer="Ted Hill <tedhill7@gmail.com>"
+license="Apache"
+homepage="http://google.github.io/flatbuffers"
+distfiles="https://github.com/google/${pkgname}/archive/v${version}.tar.gz>${pkgname}-${version}.tar.gz"
+checksum=5ca5491e4260cacae30f1a5786d109230db3f3a6e5a0eb45d0d0608293d247e3
+
+pre_configure() {
+    cd ${wrksrc}
+    mkdir -p build
+    sed -i 's/-Werror=/-W/g;s/-Werror//g' CMakeLists.txt
+}
+
+do_build() {
+    cd ${wrksrc}/build
+    cmake \
+      -DCMAKE_INSTALL_PREFIX=/usr \
+      -DCMAKE_INSTALL_LIBDIR=/usr/lib \
+      -DFLATBUFFERS_BUILD_FLATLIB=OFF \
+      -DFLATBUFFERS_BUILD_SHAREDLIB=ON \
+      ..
+
+    make
+}
+
+post_build() {
+    cd ${wrksrc}/build
+    make test
+}
