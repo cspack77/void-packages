@@ -3,7 +3,7 @@
 _desc="NVIDIA drivers for linux (long-lived series)"
 
 pkgname=nvidia
-version=396.45
+version=396.54
 revision=1
 maintainer="Juan RP <xtraeme@voidlinux.eu>"
 license="Proprietary NVIDIA license"
@@ -29,7 +29,7 @@ else
 	_pkg="NVIDIA-Linux-x86_64-${version}"
 	#_pkg="NVIDIA-Linux-x86_64-${version}-no-compat32"
 	distfiles="http://download.nvidia.com/XFree86/Linux-x86_64/${version}/${_pkg}.run"
-	checksum=30c2e29a45794227079730eac7c452da5290ea8f336ed2286dafd488e3695f20
+	checksum=7c3e3c9ca6aea31ad2613ef9cb6a4510d95d61b698f084e55adcc0611ee9eec3
 fi
 
 subpackages="nvidia-gtklibs nvidia-dkms nvidia-opencl nvidia-libs nvidia-libs-32bit"
