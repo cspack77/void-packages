@@ -1,18 +1,18 @@
 # Template file for 'kodi'
 pkgname=kodi
 version=18.0b1
-revision=1
+revision=2
 build_style=cmake
 configure_args="-DENABLE_INTERNAL_CROSSGUID=OFF"
 patch_args="-Np1"
 _codename="Leia"
-wrksrc="xbmc-${version}-${_codename}"
+wrksrc="xbmc-${version}v${revision}-${_codename}"
 short_desc="A software media player and entertainment hub for digital media"
 maintainer="Juan RP <xtraeme@voidlinux.eu>"
 homepage="http://www.kodi.tv/"
 license="GPL-2"
-distfiles="https://github.com/xbmc/xbmc/archive/${version}-${_codename}.tar.gz"
-checksum=2619243e5d97981d2ceac487e8ea65d9eca24b1dfe430ef0e2c291a3c9a9a20f
+distfiles="https://github.com/xbmc/xbmc/archive/${version}v${revision}-${_codename}.tar.gz"
+checksum=3808aa97723b710a0774261116e3387f091bc3d8150b9ba49ef36cb30b3d7ba2
 
 lib32disabled=yes
 only_for_archs="i686 i686-musl x86_64 x86_64-musl"
