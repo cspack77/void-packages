@@ -157,6 +157,10 @@ do_install() {
 	ln -sf libnvidia-fatbinaryloader.so.${version} ${DESTDIR}/usr/lib/libnvidia-fatbinaryloader.so.1
 	ln -sf libnvidia-fatbinaryloader.so.1 ${DESTDIR}/usr/lib/libnvidia-fatbinaryloader.so
 
+	vinstall libnvidia-glvkspirv.so.${version} 755 usr/lib
+	ln -sf libnvidia-glvkspirv.so.${version} ${DESTDIR}/usr/lib/libnvidia-glvkspirv.so
+	ln -sf libnvidia-glvkspirv.so.${version} ${DESTDIR}/usr/lib/libnvidia-glvkspirv.so.1
+
 	# CUDA
 	vbin nvidia-cuda-mps-control
 	vbin nvidia-cuda-mps-server
@@ -393,6 +397,10 @@ nvidia-libs-32bit_package() {
     	vinstall libnvidia-fatbinaryloader.so.${version} 755 usr/lib32
     	ln -sf libnvidia-fatbinaryloader.so.${version} ${PKGDESTDIR}/usr/lib32/libnvidia-fatbinaryloader.so.1
     	ln -sf libnvidia-fatbinaryloader.so.1 ${PKGDESTDIR}/usr/lib32/libnvidia-fatbinaryloader.so
+
+    	vinstall libnvidia-glvkspirv.so.${version} 755 usr/lib32
+    	ln -sf libnvidia-glvkspirv.so.${version} ${PKGDESTDIR}/usr/lib32/libnvidia-glvkspirv.so.1
+    	ln -sf libnvidia-glvkspirv.so.1 ${PKGDESTDIR}/usr/lib32/libnvidia-glvkspirv.so
 
     	# CUDA
     	vinstall libcuda.so.${version} 755 usr/lib32
