@@ -1,6 +1,6 @@
 #Template file for 'chatty'
 pkgname=chatty
-version=0.9.1
+version=0.9.2b7
 revision=1
 noarch=yes
 hostmakedepends="openjdk gradle"
@@ -14,7 +14,7 @@ distfiles="
  http://chatty.github.io/Chatty_icon_256x256.png>chatty.png"
 skip_extraction="chatty.png"
 checksum="
- 0286f5987599cbca2862a286fdb89bb4371e6c64e849652a038546c489b68ef7
+ 9f8a8dd354869e30aa71f7cba3bdf25bf5094fe6efade91bddb2b13ee1c45884
  8821ea5bca093b01ec244b80a76df95211aa2c151fc6320e0d3e98380108d904"
 
 do_build() {
