@@ -3,7 +3,7 @@
 _desc="NVIDIA drivers for linux (long-lived series)"
 
 pkgname=nvidia
-version=396.54
+version=410.57
 revision=1
 maintainer="Juan RP <xtraeme@voidlinux.eu>"
 license="Proprietary NVIDIA license"
@@ -29,7 +29,7 @@ else
 	_pkg="NVIDIA-Linux-x86_64-${version}"
 	#_pkg="NVIDIA-Linux-x86_64-${version}-no-compat32"
 	distfiles="http://download.nvidia.com/XFree86/Linux-x86_64/${version}/${_pkg}.run"
-	checksum=7c3e3c9ca6aea31ad2613ef9cb6a4510d95d61b698f084e55adcc0611ee9eec3
+	checksum=5c3c2e1fef0615c0002946c586c815a77676f4683304cc17d5bf323e7626a320
 fi
 
 subpackages="nvidia-gtklibs nvidia-dkms nvidia-opencl nvidia-libs nvidia-libs-32bit"
@@ -54,8 +54,9 @@ do_install() {
 	vinstall nvidia_drv.so 755 usr/lib/xorg/modules/drivers
 
 	# GLX extension module for X
-	vinstall libglx.so.${version} 755 usr/lib/xorg/modules/extensions
-	ln -sf libglx.so.${version} ${DESTDIR}/usr/lib/xorg/modules/extensions/libglx.so
+	vinstall libglxserver_nvidia.so.${version} 755 usr/lib/xorg/modules/extensions
+	ln -sf libglxserver_nvidia.so.${version} ${DESTDIR}/usr/lib/xorg/modules/extensions/libglxserver_nvidia.so
+	ln -sf libglxserver_nvidia.so.${version} ${DESTDIR}/usr/lib/xorg/modules/extensions/libglxserver_nvidia.so.1
 
 	# GLX client libs
 	if [ "${build_option_glvnd}" ]; then
@@ -105,8 +106,8 @@ do_install() {
 	ln -sf libGLESv2.so.2.1.0 ${DESTDIR}/usr/lib/libGLESv2.so
 	ln -sf libGLESv2.so.2.1.0 ${DESTDIR}/usr/lib/libGLESv2.so.2
 
-	vinstall libnvidia-egl-wayland.so.1.0.3 755 usr/lib
-	ln -sf libnvidia-egl-wayland.so.1.0.3 ${DESTDIR}/usr/lib/libnvidia-egl-wayland.so.1
+	vinstall libnvidia-egl-wayland.so.1.1.0 755 usr/lib
+	ln -sf libnvidia-egl-wayland.so.1.1.0 ${DESTDIR}/usr/lib/libnvidia-egl-wayland.so.1
 
 	vinstall 10_nvidia.json 755 usr/share/glvnd/egl_vendor.d
 	vinstall 10_nvidia_wayland.json 755 usr/share/egl/egl_external_platform.d
@@ -161,6 +162,10 @@ do_install() {
 	ln -sf libnvidia-glvkspirv.so.${version} ${DESTDIR}/usr/lib/libnvidia-glvkspirv.so
 	ln -sf libnvidia-glvkspirv.so.${version} ${DESTDIR}/usr/lib/libnvidia-glvkspirv.so.1
 
+	vinstall libnvidia-wfb.so.${version} 755 usr/lib
+	ln -sf libnvidia-wfb.so.${version} ${DESTDIR}/usr/lib/libnvidia-wfb.so
+	ln -sf libnvidia-wfb.so.${version} ${DESTDIR}/usr/lib/libnvidia-wfb.so.1
+
 	# CUDA
 	vbin nvidia-cuda-mps-control
 	vbin nvidia-cuda-mps-server
@@ -178,6 +183,19 @@ do_install() {
 	vinstall libnvidia-ptxjitcompiler.so.${version} 755 usr/lib
 	ln -sf libnvidia-ptxjitcompiler.so.${version} ${DESTDIR}/usr/lib/libnvidia-ptxjitcompiler.so.1
 	ln -sf libnvidia-ptxjitcompiler.so.1 ${DESTDIR}/usr/lib/libnvidia-ptxjitcompiler.so
+
+    # Raytracing
+	vinstall libnvoptix.so.${version} 755 usr/lib
+	ln -sf libnvoptix.so.${version} ${DESTDIR}/usr/lib/libnvoptix.so
+	ln -sf libnvoptix.so.${version} ${DESTDIR}/usr/lib/libnvoptix.so.1
+
+	vinstall libnvidia-rtcore.so.${version} 755 usr/lib
+	ln -sf libnvidia-rtcore.so.${version} ${DESTDIR}/usr/lib/libnvidia-rtcore.so
+	ln -sf libnvidia-rtcore.so.${version} ${DESTDIR}/usr/lib/libnvidia-rtcore.so.1
+
+	vinstall libnvidia-cbl.so.${version} 755 usr/lib
+	ln -sf libnvidia-cbl.so.${version} ${DESTDIR}/usr/lib/libnvidia-cbl.so
+	ln -sf libnvidia-cbl.so.${version} ${DESTDIR}/usr/lib/libnvidia-cbl.so.1
 
 	# nvidia-xconfig
 	vbin nvidia-xconfig
