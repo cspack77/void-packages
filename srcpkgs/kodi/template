@@ -1,6 +1,6 @@
 # Template file for 'kodi'
 pkgname=kodi
-version=18.0b2
+version=18.0b3
 revision=1
 build_style=cmake
 configure_args="-DENABLE_INTERNAL_CROSSGUID=OFF"
@@ -12,7 +12,7 @@ maintainer="Juan RP <xtraeme@voidlinux.eu>"
 homepage="http://www.kodi.tv/"
 license="GPL-2"
 distfiles="https://github.com/xbmc/xbmc/archive/${version}-${_codename}.tar.gz"
-checksum=25fc0aabfb523d4db19e08b1990d4851592ee2adec0424f5fb729bd3672eae69
+checksum=cc5f1a75287438b2336c49a265019a4cab9626235e05a70345d77e4cecd6dce3
 
 lib32disabled=yes
 only_for_archs="i686 i686-musl x86_64 x86_64-musl"
